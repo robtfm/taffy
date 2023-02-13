@@ -43,6 +43,9 @@ pub enum LengthPercentageAuto {
     Percent(f32),
     /// The dimension should be automatically computed
     Auto,
+    /// The dimension should take up available space in proportion to the parameter
+    #[cfg(feature = "morphorm")]
+    MorphormStretch(f32),
 }
 impl TaffyZero for LengthPercentageAuto {
     const ZERO: Self = Self::Points(0.0);
@@ -80,6 +83,7 @@ impl LengthPercentageAuto {
             Self::Points(points) => Some(points),
             Self::Percent(percent) => Some(context * percent),
             Self::Auto => None,
+            Self::MorphormStretch(_) => None,
         }
     }
 }
@@ -97,6 +101,9 @@ pub enum Dimension {
     Percent(f32),
     /// The dimension should be automatically computed
     Auto,
+    /// The dimension should take up available space in proportion to the parameter
+    #[cfg(feature = "morphorm")]
+    MorphormStretch(f32),
 }
 impl TaffyZero for Dimension {
     const ZERO: Self = Self::Points(0.0);
@@ -130,6 +137,7 @@ impl From<LengthPercentageAuto> for Dimension {
             LengthPercentageAuto::Points(value) => Self::Points(value),
             LengthPercentageAuto::Percent(value) => Self::Percent(value),
             LengthPercentageAuto::Auto => Self::Auto,
+            LengthPercentageAuto::MorphormStretch(val) => Self::MorphormStretch(val),
         }
     }
 }

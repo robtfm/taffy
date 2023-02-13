@@ -42,6 +42,7 @@ impl MaybeResolve<Option<f32>, Option<f32>> for LengthPercentageAuto {
             LengthPercentageAuto::Points(points) => Some(points),
             LengthPercentageAuto::Percent(percent) => context.map(|dim| dim * percent),
             LengthPercentageAuto::Auto => None,
+            LengthPercentageAuto::MorphormStretch(_) => None,
         }
     }
 }
@@ -55,6 +56,7 @@ impl MaybeResolve<Option<f32>, Option<f32>> for Dimension {
             Dimension::Points(points) => Some(points),
             Dimension::Percent(percent) => context.map(|dim| dim * percent),
             Dimension::Auto => None,
+            Dimension::MorphormStretch(_) => None,
         }
     }
 }
