@@ -1,11 +1,13 @@
 //! The layout algorithms themselves
 
 pub(crate) mod common;
-pub(crate) mod flexbox;
 pub(crate) mod leaf;
+pub(crate) mod flexbox;
 
 #[cfg(feature = "grid")]
 pub(crate) mod grid;
+#[cfg(feature = "morphorm")]
+pub(crate) mod morphorm;
 
 use crate::data::CACHE_SIZE;
 use crate::error::TaffyError;
@@ -16,10 +18,11 @@ use crate::style::{AvailableSpace, Display};
 use crate::sys::round;
 use crate::tree::LayoutTree;
 
+use self::leaf::LeafAlgorithm;
 use self::flexbox::FlexboxAlgorithm;
 #[cfg(feature = "grid")]
 use self::grid::CssGridAlgorithm;
-use self::leaf::LeafAlgorithm;
+use self::morphorm::MorphormAlgorithm;
 
 #[cfg(any(feature = "debug", feature = "profile"))]
 use crate::debug::NODE_LOGGER;
@@ -202,6 +205,16 @@ fn compute_node_layout(
             ),
             #[cfg(feature = "grid")]
             Display::Grid => perform_computations::<CssGridAlgorithm>(
+                tree,
+                node,
+                known_dimensions,
+                parent_size,
+                available_space,
+                run_mode,
+                sizing_mode,
+            ),
+            #[cfg(feature = "morphorm")]
+            Display::Morphorm => perform_computations::<CssGridAlgorithm>(
                 tree,
                 node,
                 known_dimensions,

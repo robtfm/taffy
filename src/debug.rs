@@ -24,6 +24,8 @@ fn print_node(tree: &impl LayoutTree, node: Node, has_sibling: bool, lines_strin
         (_, style::Display::Flex) => "FLEX",
         #[cfg(feature = "grid")]
         (_, style::Display::Grid) => "GRID",
+        #[cfg(feature = "morphorm")]
+        (_, style::Display::Morphorm) => "MORPHORM",
     };
 
     let fork_string = if has_sibling { "├── " } else { "└── " };
