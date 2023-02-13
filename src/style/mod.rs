@@ -196,7 +196,10 @@ pub struct Style {
     // Morphorm container properties
     /// Sets the default spacing *around* the group of all children of a morphorm container
     #[cfg(feature = "morphorm")]
-    pub child_spacing: Rect<LengthPercentageAuto>,
+    pub spacing_around: Rect<LengthPercentageAuto>,
+    /// Sets the default spacing *between* the group of all children of a morphorm container
+    #[cfg(feature = "morphorm")]
+    pub spacing_between: Size<LengthPercentageAuto>,
 
     // Morphorm child properties
     /// Sets the minimum margin for child
@@ -250,7 +253,9 @@ impl Style {
         grid_column: Line { start: GridPlacement::Auto, end: GridPlacement::Auto },
 
         #[cfg(feature = "morphorm")]
-        child_spacing: Rect::zero(),
+        spacing_around: Rect::zero(),
+        #[cfg(feature = "morphorm")]
+        spacing_between: Size::zero(),
         #[cfg(feature = "morphorm")]
         min_margin: Rect::zero(),
         #[cfg(feature = "morphorm")]
@@ -321,7 +326,9 @@ mod tests {
             grid_column: Line { start: GridPlacement::Auto, end: GridPlacement::Auto },
 
             #[cfg(feature = "morphorm")]
-            child_spacing: Rect::zero(),
+            spacing_around: Rect::zero(),
+            #[cfg(feature = "morphorm")]
+            spacing_between: Size::zero(),
             #[cfg(feature = "morphorm")]
             min_margin: Rect::zero(),
             #[cfg(feature = "morphorm")]

@@ -2,7 +2,7 @@
 
 use crate::style::{Dimension, FlexDirection};
 use crate::sys::f32_max;
-use core::ops::Add;
+use core::ops::{Add, Sub};
 
 #[cfg(feature = "grid")]
 use crate::axis::AbstractAxis;
@@ -168,12 +168,30 @@ where
         }
     }
 
+    /// Set the `start` or `top` value of the [`Rect`], from the perspective of the main layout axis
+    pub(crate) fn set_main_start(&self, direction: FlexDirection, value: T) {
+        if direction.is_row() {
+            self.left = value;
+        } else {
+            self.top = value;
+        }
+    }
+
     /// The `end` or `bottom` value of the [`Rect`], from the perspective of the main layout axis
     pub(crate) fn main_end(&self, direction: FlexDirection) -> T {
         if direction.is_row() {
             self.right
         } else {
             self.bottom
+        }
+    }
+
+    /// Set the `end` or `bottom` value of the [`Rect`], from the perspective of the main layout axis
+    pub(crate) fn set_main_end(&self, direction: FlexDirection, value: T) {
+        if direction.is_row() {
+            self.right = value;
+        } else {
+            self.bottom = value;
         }
     }
 
@@ -186,12 +204,32 @@ where
         }
     }
 
+
+    /// Set the `start` or `top` value of the [`Rect`], from the perspective of the cross layout axis
+    pub(crate) fn set_cross_start(&self, direction: FlexDirection, value: T) {
+        if direction.is_row() {
+            self.top = value;
+        } else {
+            self.left = value;
+        }
+    }
+
     /// The `end` or `bottom` value of the [`Rect`], from the perspective of the main layout axis
     pub(crate) fn cross_end(&self, direction: FlexDirection) -> T {
         if direction.is_row() {
             self.bottom
         } else {
             self.right
+        }
+    }
+
+
+    /// Set the `end` or `bottom` value of the [`Rect`], from the perspective of the main layout axis
+    pub(crate) fn set_cross_end(&self, direction: FlexDirection, value: T) {
+        if direction.is_row() {
+            self.bottom = value;
+        } else {
+            self.right = value;
         }
     }
 }
@@ -204,6 +242,28 @@ impl Rect<f32> {
     #[must_use]
     pub const fn new(start: f32, end: f32, top: f32, bottom: f32) -> Self {
         Self { left: start, right: end, top, bottom }
+    }
+}
+
+impl<T> Rect<Option<T>> {
+    /// Performs Option::unwrap_or on each component separately
+    pub fn unwrap_or(self, alt: Rect<T>) -> Rect<T> {
+        Rect {
+            left: self.left.unwrap_or(alt.left),
+            right: self.right.unwrap_or(alt.right),
+            top: self.top.unwrap_or(alt.top),
+            bottom: self.bottom.unwrap_or(alt.bottom),
+        }
+    }
+
+    /// Performs Option::or on each component separately
+    pub fn or(self, alt: Rect<Option<T>>) -> Rect<Option<T>> {
+        Rect {
+            left: self.left.or(alt.left),
+            right: self.right.or(alt.right),
+            top: self.top.or(alt.top),
+            bottom: self.bottom.or(alt.bottom),
+        }
     }
 }
 
@@ -256,6 +316,15 @@ impl<T: Default> Default for Size<T> {
 // Generic Add impl for Size<T> + Size<U> where T + U has an Add impl
 impl<U, T: Add<U>> Add<Size<U>> for Size<T> {
     type Output = Size<<T as Add<U>>::Output>;
+
+    fn add(self, rhs: Size<U>) -> Self::Output {
+        Size { width: self.width + rhs.width, height: self.height + rhs.height }
+    }
+}
+
+// Generic Sub impl for Size<T> + Size<U> where T + U has an Sub impl
+impl<U, T: Sub<U>> Sub<Size<U>> for Size<T> {
+    type Output = Size<<T as Sub<U>>::Output>;
 
     fn add(self, rhs: Size<U>) -> Self::Output {
         Size { width: self.width + rhs.width, height: self.height + rhs.height }
