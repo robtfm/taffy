@@ -19,6 +19,9 @@ pub trait TraversePartialTree {
 
     /// Get a specific child of a node, where the index represents the nth child
     fn get_child_id(&self, parent_node_id: NodeId, child_index: usize) -> NodeId;
+
+    /// get the parent
+    fn parent(&self, node: NodeId) -> Option<NodeId>;    
 }
 
 /// A marker trait which extends `TraversePartialTree` with the additional guarantee that the child/children methods can be used to recurse

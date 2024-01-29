@@ -179,6 +179,10 @@ impl<NodeContext> TraversePartialTree for TaffyTree<NodeContext> {
     fn get_child_id(&self, parent_node_id: NodeId, id: usize) -> NodeId {
         self.children[parent_node_id.into()][id]
     }
+
+    fn parent(&self, node: NodeId) -> Option<NodeId> {
+        self.parents.get(node.into()).copied().flatten()
+    }
 }
 
 // TraverseTree impl for TaffyTree
@@ -250,6 +254,10 @@ where
     fn get_child_id(&self, parent_node_id: NodeId, child_index: usize) -> NodeId {
         self.taffy.get_child_id(parent_node_id, child_index)
     }
+
+    fn parent(&self, node: NodeId) -> Option<NodeId> {
+        self.taffy.parents.get(node.into()).copied().flatten()
+    }    
 }
 
 // TraverseTree impl for TaffyView
